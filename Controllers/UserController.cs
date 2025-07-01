@@ -1,18 +1,16 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using BlogsApi.Models.DTOs.Role;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BlogsApi.Controllers;
 [ApiController]
-[Route("[controller]")]
-public class UserController(UserManager<IdentityUser> userManager):ControllerBase
+[Route("users")]
+public class UsersController : ControllerBase
 {
- [HttpGet("")]
-
- [Authorize]
- public IActionResult Index()
- {
-  var userId = userManager.GetUserId(User);
-  return Ok();
- }
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{id}/role")]
+    public IActionResult UpdateRole(int id, [FromBody] UpdateRoleDto dto)
+    {
+        // Kullanıcı rolünü güncelle (admin/moderator vs)
+        return Ok();
+    }
 }
