@@ -31,7 +31,13 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
     {
-        var result = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, true, lockoutOnFailure: false);
+        // Email ile kullanıcıyı bul
+        var user = await _userManager.FindByEmailAsync(dto.Email);
+        if (user == null)
+            return Unauthorized("Kullanıcı bulunamadı");
+
+        // Username ile giriş yap
+        var result = await _signInManager.PasswordSignInAsync(user.UserName, dto.Password, true, lockoutOnFailure: false);
         if (result.Succeeded)
             return Ok("Giriş başarılı");
         return Unauthorized("Hatalı giriş");
